@@ -2,7 +2,8 @@ using Godot;
 using System;
 
 public class Player : KinematicBody2D {
-	private AnimationPlayer _AnimationPlayer;
+	private AnimationTree _AnimationTree;
+	private AnimationNodeStateMachinePlayback _AnimationTreeState;
 
 	/// <summary>How quickly the player's <see cref="Velocity"> gets up to <see cref="MaxSpeed"></summary>
 	public float Acceleration {
@@ -30,15 +31,12 @@ public class Player : KinematicBody2D {
 		).Normalized();
 
 		if (inputVector != Vector2.Zero) {
-			if (inputVector.x > 0) {
-				_AnimationPlayer.Play("Run");
-			} else {
-				_AnimationPlayer.Play("RunLeft");
-			}
-
+			_AnimationTree.Set("parameters/Idle/blend_position", inputVector);
+			_AnimationTree.Set("parameters/Run/blend_position", inputVector);
+			_AnimationTreeState.Travel("Run");
 			Velocity = Velocity.MoveToward(inputVector * MaxSpeed, Acceleration * delta);
 		} else {
-			_AnimationPlayer.Play("IdleRight");
+			_AnimationTreeState.Travel("Idle");
 			Velocity = Velocity.MoveToward(Vector2.Zero, Friction * delta);
 		}
 
@@ -47,6 +45,7 @@ public class Player : KinematicBody2D {
 
 	/// <inheritdoc />
 	public override void _Ready() {
-		_AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+		_AnimationTree = GetNode<AnimationTree>("AnimationTree");
+		_AnimationTreeState = _AnimationTree.Get("parameters/playback") as AnimationNodeStateMachinePlayback;
 	}
 }
