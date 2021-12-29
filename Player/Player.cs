@@ -1,9 +1,15 @@
 using Godot;
 using System;
 
+public enum PlayerState {
+	Move,
+	Attack
+}
+
 public class Player : KinematicBody2D {
 	private AnimationTree _AnimationTree;
 	private AnimationNodeStateMachinePlayback _AnimationTreeState;
+	private PlayerState _State = PlayerState.Move;
 
 	/// <summary>How quickly the player's <see cref="Velocity"> gets up to <see cref="MaxSpeed"></summary>
 	public float Acceleration {
@@ -25,12 +31,41 @@ public class Player : KinematicBody2D {
 
 	/// <inheritdoc />
  	public override void _PhysicsProcess(float delta) {
+		 switch (_State) {
+			case PlayerState.Attack:
+				StateAttack(delta);
+				break;
+			case PlayerState.Move:
+			 	StateMove(delta);
+				break;
+
+		 }
+	}
+
+	/// <inheritdoc />
+	public override void _Ready() {
+		_AnimationTree = GetNode<AnimationTree>("AnimationTree");
+		_AnimationTreeState = _AnimationTree.Get("parameters/playback") as AnimationNodeStateMachinePlayback;
+		_AnimationTree.Active = true;
+	}
+
+	public void StateFinished() {
+		_State = PlayerState.Move;
+	}
+
+	private void StateAttack(float delta) {
+		_AnimationTreeState.Travel("Attack");
+		Velocity = Vector2.Zero;
+	}
+
+	private void StateMove(float delta) {
 		var inputVector = new Vector2(
 			Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left"),
 			Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up")
 		).Normalized();
 
 		if (inputVector != Vector2.Zero) {
+			_AnimationTree.Set("parameters/Attack/blend_position", inputVector);
 			_AnimationTree.Set("parameters/Idle/blend_position", inputVector);
 			_AnimationTree.Set("parameters/Run/blend_position", inputVector);
 			_AnimationTreeState.Travel("Run");
@@ -41,11 +76,9 @@ public class Player : KinematicBody2D {
 		}
 
 		Velocity = MoveAndSlide(Velocity);
-	}
 
-	/// <inheritdoc />
-	public override void _Ready() {
-		_AnimationTree = GetNode<AnimationTree>("AnimationTree");
-		_AnimationTreeState = _AnimationTree.Get("parameters/playback") as AnimationNodeStateMachinePlayback;
+		if (Input.IsActionJustPressed("attack")) {
+			_State = PlayerState.Attack;
+		}
 	}
 }
