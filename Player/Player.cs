@@ -30,7 +30,7 @@ public class Player : KinematicBody2D {
 	public Vector2 Velocity { get; private set; }
 
 	/// <inheritdoc />
- 	public override void _PhysicsProcess(float delta) {
+ 	public override void _Process(float delta) {
 		 switch (_State) {
 			case PlayerState.Attack:
 				StateAttack(delta);
