@@ -8,25 +8,21 @@ public enum PlayerState {
 }
 
 public class Player : KinematicBody2D {
+	/// <summary>How quickly the player's <see cref="Velocity"> gets up to <see cref="MaxSpeed"></summary>
+	[Export]
+	public float Acceleration = 500;
+	/// <summary>Max distance per second the player can travel at.</summary>
+	[Export]
+	public float MaxSpeed = 80;
 	private AnimationTree _AnimationTree;
 	private AnimationNodeStateMachinePlayback _AnimationTreeState;
 	private Vector2 _InputDirection = Vector2.Zero;
 	private PlayerState _State = PlayerState.Move;
 	private SwordHitbox _SwordHitbox;
 
-	/// <summary>How quickly the player's <see cref="Velocity"> gets up to <see cref="MaxSpeed"></summary>
-	public float Acceleration {
-		get => 500;
-	}
-
 	/// <summary>How quickly the player's <see cref="Velocity"> slows down to 0.</summary>
 	public float Friction {
 		get => Acceleration;
-	}
-
-	/// <summary>Max distance per second the player can travel at.</summary>
-	public float MaxSpeed {
-		get => 80;
 	}
 
 	public float MaxRollSpeed {
