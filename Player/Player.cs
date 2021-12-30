@@ -12,6 +12,7 @@ public class Player : KinematicBody2D {
 	private AnimationNodeStateMachinePlayback _AnimationTreeState;
 	private Vector2 _InputDirection = Vector2.Zero;
 	private PlayerState _State = PlayerState.Move;
+	private SwordHitbox _SwordHitbox;
 
 	/// <summary>How quickly the player's <see cref="Velocity"> gets up to <see cref="MaxSpeed"></summary>
 	public float Acceleration {
@@ -55,6 +56,7 @@ public class Player : KinematicBody2D {
 		_AnimationTree = GetNode<AnimationTree>("AnimationTree");
 		_AnimationTreeState = _AnimationTree.Get("parameters/playback") as AnimationNodeStateMachinePlayback;
 		_AnimationTree.Active = true;
+		_SwordHitbox = GetNode<SwordHitbox>("HitboxPivot/SwordHitbox");
 	}
 
 	public void _OnStateFinished() {
@@ -77,6 +79,7 @@ public class Player : KinematicBody2D {
 			_AnimationTree.Set("parameters/Idle/blend_position", _InputDirection);
 			_AnimationTree.Set("parameters/Roll/blend_position", _InputDirection);
 			_AnimationTree.Set("parameters/Run/blend_position", _InputDirection);
+			_SwordHitbox.KnockbackDirection = _InputDirection;
 			_AnimationTreeState.Travel("Run");
 			Velocity = Velocity.MoveToward(_InputDirection * MaxSpeed, Acceleration * delta);
 		} else {
