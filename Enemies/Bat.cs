@@ -1,6 +1,7 @@
 using Godot;
 
 public class Bat : KinematicBody2D {
+	public static readonly PackedScene DeathEffectScene = ResourceLoader.Load<PackedScene>("res://Effects/EnemyDeathEffect.tscn");
 	private Stats _Stats;
 	private Vector2 _Velocity = Vector2.Zero;
 
@@ -32,6 +33,9 @@ public class Bat : KinematicBody2D {
 	}
 
 	private void Die() {
+		var deathEffect = Bat.DeathEffectScene.Instance<Node2D>();
+		deathEffect.Transform = Transform;
+		GetParent().AddChild(deathEffect);
 		QueueFree();
 	}
 }
