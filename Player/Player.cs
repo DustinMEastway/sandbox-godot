@@ -2,8 +2,9 @@ using Godot;
 using System;
 
 public enum PlayerState {
+	Attack,
 	Move,
-	Attack
+	Roll
 }
 
 public class Player : KinematicBody2D {
@@ -30,7 +31,7 @@ public class Player : KinematicBody2D {
 	public Vector2 Velocity { get; private set; }
 
 	/// <inheritdoc />
- 	public override void _Process(float delta) {
+ 	public override void _PhysicsProcess(float delta) {
 		 switch (_State) {
 			case PlayerState.Attack:
 				StateAttack(delta);
@@ -49,7 +50,7 @@ public class Player : KinematicBody2D {
 		_AnimationTree.Active = true;
 	}
 
-	public void StateFinished() {
+	public void _OnStateFinished() {
 		_State = PlayerState.Move;
 	}
 
