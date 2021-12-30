@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Enemies/Bat.png" type="Texture" id=1]
 [ext_resource path="res://Shadows/SmallShadow.png" type="Texture" id=2]
 [ext_resource path="res://DamageAreas/Hurtbox.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Enemies/Bat.cs" type="Script" id=4]
 [ext_resource path="res://Utilities/Stats.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Enemies/PlayerDectionZone.tscn" type="PackedScene" id=6]
 
 [sub_resource type="AtlasTexture" id=2]
 atlas = ExtResource( 1 )
@@ -40,6 +41,9 @@ animations = [ {
 radius = 7.0
 height = 3.0
 
+[sub_resource type="CircleShape2D" id=9]
+radius = 80.0
+
 [node name="Bat" type="KinematicBody2D"]
 collision_layer = 16
 script = ExtResource( 4 )
@@ -67,7 +71,17 @@ shape = SubResource( 8 )
 [node name="Stats" parent="." instance=ExtResource( 5 )]
 MaxHealth = 3
 
+[node name="PlayerDectionZone" parent="." instance=ExtResource( 6 )]
+position = Vector2( 0, -12 )
+
+[node name="CollisionShape2D" parent="PlayerDectionZone" index="0"]
+modulate = Color( 0, 0, 1, 0.196078 )
+shape = SubResource( 9 )
+
 [connection signal="area_entered" from="Hurtbox" to="." method="_OnHurtboxAreaEntered"]
 [connection signal="Die" from="Stats" to="." method="_OnStatsDie"]
+[connection signal="PlayerDetected" from="PlayerDectionZone" to="." method="_OnPlayerDectionZonePlayerDetected"]
+[connection signal="PlayerLost" from="PlayerDectionZone" to="." method="_OnPlayerDectionZonePlayerLost"]
 
 [editable path="Hurtbox"]
+[editable path="PlayerDectionZone"]
