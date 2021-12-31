@@ -16,8 +16,10 @@ public class Player : KinematicBody2D {
 	public float MaxSpeed = 80;
 	private AnimationTree _AnimationTree;
 	private AnimationNodeStateMachinePlayback _AnimationTreeState;
+	private Hurtbox _Hurtbox;
 	private Vector2 _InputDirection = Vector2.Zero;
 	private PlayerState _State = PlayerState.Move;
+	private Stats _Stats;
 	private SwordHitbox _SwordHitbox;
 
 	/// <summary>How quickly the player's <see cref="Velocity"> slows down to 0.</summary>
@@ -52,11 +54,22 @@ public class Player : KinematicBody2D {
 		_AnimationTree = GetNode<AnimationTree>("AnimationTree");
 		_AnimationTreeState = _AnimationTree.Get("parameters/playback") as AnimationNodeStateMachinePlayback;
 		_AnimationTree.Active = true;
+		_Hurtbox = GetNode<Hurtbox>("Hurtbox");
+		_Stats = GetNode<Stats>("Stats");
 		_SwordHitbox = GetNode<SwordHitbox>("HitboxPivot/SwordHitbox");
+	}
+
+	private void _OnHurtboxAreaEntered(object area) {
+		_Stats.TakeDamage((area as Hitbox)?.Damage ?? 0);
+		_Hurtbox.BecomeInvincible(0.5f);
 	}
 
 	public void _OnStateFinished() {
 		_State = PlayerState.Move;
+	}
+
+	private void _OnStatsDie() {
+		QueueFree();
 	}
 
 	private void StateAttack(float delta) {
