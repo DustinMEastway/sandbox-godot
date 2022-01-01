@@ -9,6 +9,6 @@ public class World : Node2D {
 	public override void _Ready() {
 		_HealthUi = GetNode<HealthUi>("HealthUi");
 		_Player = GetNode<Player>("YSort/Player");
-		_HealthUi.Stats = _Player.Stats;
+		_HealthUi.UiStats = _Player.Stats;
 	}
 }
