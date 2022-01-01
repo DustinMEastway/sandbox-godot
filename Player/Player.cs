@@ -31,6 +31,10 @@ public class Player : KinematicBody2D {
 		get => MaxSpeed * 1.5f;
 	}
 
+	public Stats Stats {
+		get => _Stats;
+	}
+
 	/// <summary>Current distance per second the player is travelling at.</summary>
 	public Vector2 Velocity { get; private set; }
 
