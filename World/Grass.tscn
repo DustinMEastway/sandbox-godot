@@ -2,7 +2,7 @@
 
 [ext_resource path="res://World/Grass.png" type="Texture" id=1]
 [ext_resource path="res://World/Grass.cs" type="Script" id=2]
-[ext_resource path="res://DamageAreas/Hurtbox.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Overlaps/Hurtbox.tscn" type="PackedScene" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 
