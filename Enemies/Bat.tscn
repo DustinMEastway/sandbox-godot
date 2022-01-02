@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Enemies/Bat.png" type="Texture" id=1]
 [ext_resource path="res://Shadows/SmallShadow.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Utilities/Stats.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Enemies/PlayerDectionZone.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Overlaps/Hitbox.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Overlaps/SoftCollision.tscn" type="PackedScene" id=8]
 
 [sub_resource type="AtlasTexture" id=2]
 atlas = ExtResource( 1 )
@@ -47,6 +48,9 @@ radius = 80.0
 
 [sub_resource type="CircleShape2D" id=10]
 radius = 6.0
+
+[sub_resource type="CircleShape2D" id=11]
+radius = 3.0
 
 [node name="Bat" type="KinematicBody2D"]
 collision_layer = 16
@@ -89,6 +93,11 @@ collision_mask = 4
 position = Vector2( 0, -15 )
 shape = SubResource( 10 )
 
+[node name="SoftCollision" parent="." instance=ExtResource( 8 )]
+
+[node name="CollisionShape2D" parent="SoftCollision" index="0"]
+shape = SubResource( 11 )
+
 [connection signal="area_entered" from="Hurtbox" to="." method="_OnHurtboxAreaEntered"]
 [connection signal="Die" from="Stats" to="." method="_OnStatsDie"]
 [connection signal="PlayerDetected" from="PlayerDectionZone" to="." method="_OnPlayerDectionZonePlayerDetected"]
@@ -97,3 +106,4 @@ shape = SubResource( 10 )
 [editable path="Hurtbox"]
 [editable path="PlayerDectionZone"]
 [editable path="Hitbox"]
+[editable path="SoftCollision"]

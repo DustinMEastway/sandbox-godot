@@ -13,7 +13,7 @@ public class Hurtbox : Area2D {
 		get => _Invincible;
 		set {
 			_Invincible = value;
-			SetDeferred("Monitorable", !value);
+			SetDeferred("monitoring", !value);
 			EmitSignal(nameof(InvincibleChange), _Invincible);
 		}
 	}

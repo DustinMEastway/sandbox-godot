@@ -17,6 +17,7 @@ public class Bat : KinematicBody2D {
 	public float MaxSpeed = 50;
 	private AnimatedSprite _AnimatedSprite;
 	private PlayerDectionZone _PlayerDectionZone;
+	private SoftCollision _SoftCollision;
 	private BatState _State = BatState.Chase;
 	private Stats _Stats;
 	private Vector2 _Velocity = Vector2.Zero;
@@ -58,6 +59,7 @@ public class Bat : KinematicBody2D {
 		_AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		_AnimatedSprite.Play();
 		_PlayerDectionZone = GetNode<PlayerDectionZone>("PlayerDectionZone");
+		_SoftCollision = GetNode<SoftCollision>("SoftCollision");
 		_Stats = GetNode<Stats>("Stats");
 	}
 
@@ -68,20 +70,34 @@ public class Bat : KinematicBody2D {
 		QueueFree();
 	}
 
+	private void Move(float delta, bool collide = false) {
+		// keep out of the way of other bats
+		if (_SoftCollision.IsColliding) {
+			_Velocity += _SoftCollision.PushVector * delta * MaxSpeed * 4;
+		}
+
+		if (collide) {
+			var collision = MoveAndCollide(_Velocity * delta);
+			if (collision != null) {
+				_Velocity = _Velocity.Bounce(collision.Normal) * .5f;
+			}
+		} else {
+			MoveAndSlide(_Velocity);
+		}
+	}
+
 	private void StateChase(float delta) {
 		var destination = _PlayerDectionZone.DetectedPlayer?.GlobalPosition ?? GlobalPosition;
 		var moveDirection = Position.DirectionTo(destination).Normalized();
 		_Velocity = _Velocity.MoveToward(moveDirection * MaxSpeed, Acceleration * delta);
+
 		_AnimatedSprite.FlipH = _Velocity.x < 0;
-		MoveAndSlide(_Velocity);
+		Move(delta);
 	}
 
 	private void StateIdle(float delta) {
 		_Velocity = _Velocity.MoveToward(Vector2.Zero, Friction * delta);
-		var collision = MoveAndCollide(_Velocity * delta);
-		if (collision != null) {
-			_Velocity = _Velocity.Bounce(collision.Normal) * .5f;
-		}
+		Move(delta, true);
 	}
 
 	private void StateWander(float delta) {
