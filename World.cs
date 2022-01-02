@@ -7,7 +7,7 @@ public class World : Node2D {
 	private HealthUi _HealthUi;
 
 	public override void _Ready() {
-		_HealthUi = GetNode<HealthUi>("HealthUi");
+		_HealthUi = GetNode<HealthUi>("CanvasLayer/HealthUi");
 		_Player = GetNode<Player>("YSort/Player");
 		_HealthUi.UiStats = _Player.Stats;
 	}
