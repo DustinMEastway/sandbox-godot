@@ -8,6 +8,7 @@ public enum BatState {
 
 public class Bat : KinematicBody2D {
 	public static readonly PackedScene DeathEffectScene = ResourceLoader.Load<PackedScene>("res://Effects/EnemyDeathEffect.tscn");
+	public static BatState[] IdleStates = new BatState[] { BatState.Idle, BatState.Wander };
 
 	[Export]
 	public float Acceleration = 500;
@@ -15,11 +16,16 @@ public class Bat : KinematicBody2D {
 	public float Friction = 200;
 	[Export]
 	public float MaxSpeed = 50;
+	[Export]
+	public float WanderRange = 35;
 	private AnimatedSprite _AnimatedSprite;
+	private Vector2 _InitialPosition;
 	private PlayerDectionZone _PlayerDectionZone;
 	private SoftCollision _SoftCollision;
 	private BatState _State = BatState.Chase;
 	private Stats _Stats;
+	private Vector2 _WanderPosition;
+	private Timer _WanderTimer;
 	private Vector2 _Velocity = Vector2.Zero;
 
 	private void _OnHurtboxAreaEntered(object area) {
@@ -30,11 +36,11 @@ public class Bat : KinematicBody2D {
 
 	private void _OnPlayerDectionZonePlayerDetected(Player player) {
 		_State = BatState.Chase;
+		_WanderTimer.Stop();
 	}
 
-
 	private void _OnPlayerDectionZonePlayerLost(Player player) {
-		_State = BatState.Idle;
+		_OnWanderTimerTimeout();
 	}
 
 	private void _OnStatsDie() {
@@ -56,11 +62,14 @@ public class Bat : KinematicBody2D {
 	}
 
 	public override void _Ready() {
+		_InitialPosition = GlobalPosition;
 		_AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		_AnimatedSprite.Play();
 		_PlayerDectionZone = GetNode<PlayerDectionZone>("PlayerDectionZone");
 		_SoftCollision = GetNode<SoftCollision>("SoftCollision");
 		_Stats = GetNode<Stats>("Stats");
+		_WanderTimer = GetNode<Timer>("WanderTimer");
+		_OnWanderTimerTimeout();
 	}
 
 	private void Die() {
@@ -68,6 +77,14 @@ public class Bat : KinematicBody2D {
 		deathEffect.Transform = Transform;
 		GetParent().AddChild(deathEffect);
 		QueueFree();
+	}
+
+	private void AccelerateTowards(float delta, Vector2 destination) {
+		var moveDirection = GlobalPosition.DirectionTo(destination).Normalized();
+		_Velocity = _Velocity.MoveToward(moveDirection * MaxSpeed, Acceleration * delta);
+		_AnimatedSprite.FlipH = _Velocity.x < 0;
+
+		Move(delta);
 	}
 
 	private void Move(float delta, bool collide = false) {
@@ -88,11 +105,7 @@ public class Bat : KinematicBody2D {
 
 	private void StateChase(float delta) {
 		var destination = _PlayerDectionZone.DetectedPlayer?.GlobalPosition ?? GlobalPosition;
-		var moveDirection = Position.DirectionTo(destination).Normalized();
-		_Velocity = _Velocity.MoveToward(moveDirection * MaxSpeed, Acceleration * delta);
-
-		_AnimatedSprite.FlipH = _Velocity.x < 0;
-		Move(delta);
+		AccelerateTowards(delta, destination);
 	}
 
 	private void StateIdle(float delta) {
@@ -101,5 +114,19 @@ public class Bat : KinematicBody2D {
 	}
 
 	private void StateWander(float delta) {
+		if (GlobalPosition.DistanceTo(_WanderPosition) > Acceleration * delta) {
+			AccelerateTowards(delta, _WanderPosition);
+		}
+	}
+
+	private void _OnWanderTimerTimeout() {
+		_State = IdleStates[(int)GD.RandRange(0, IdleStates.Length)];
+		_WanderTimer.Start((float)GD.RandRange(1, 3));
+		if (_State == BatState.Wander) {
+			_WanderPosition = _InitialPosition + new Vector2(
+				(float)GD.RandRange(-WanderRange, WanderRange),
+				(float)GD.RandRange(-WanderRange, WanderRange)
+			);
+		}
 	}
 }
