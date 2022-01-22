@@ -8,6 +8,7 @@ public enum PlayerState {
 }
 
 public class Player : KinematicBody2D {
+	public static readonly PackedScene PlayerHurtSoundScene = ResourceLoader.Load<PackedScene>("res://Player/PlayerHurtSound.tscn");
 	/// <summary>How quickly the player's <see cref="Velocity"> gets up to <see cref="MaxSpeed"></summary>
 	[Export]
 	public float Acceleration = 500;
@@ -66,6 +67,8 @@ public class Player : KinematicBody2D {
 	private void _OnHurtboxAreaEntered(object area) {
 		_Stats.TakeDamage((area as Hitbox)?.Damage ?? 0);
 		_Hurtbox.BecomeInvincible(0.5f);
+		var playerHurtSound = Player.PlayerHurtSoundScene.Instance<PlayerHurtSound>();
+		GetTree().CurrentScene.AddChild(playerHurtSound);
 	}
 
 	public void _OnStateFinished() {
