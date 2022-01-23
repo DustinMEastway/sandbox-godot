@@ -799,6 +799,10 @@ height = 5.0
 collision_layer = 2
 script = ExtResource( 2 )
 
+[node name="ShadowSprite" type="Sprite" parent="."]
+texture = ExtResource( 7 )
+offset = Vector2( 0, 3 )
+
 [node name="Sprite" type="Sprite" parent="."]
 material = SubResource( 58 )
 position = Vector2( 0, -9 )
@@ -862,10 +866,6 @@ collision_layer = 4
 [node name="CollisionShape2D" parent="Hurtbox" index="0"]
 position = Vector2( 0, -4 )
 shape = SubResource( 54 )
-
-[node name="Sprite2" type="Sprite" parent="."]
-texture = ExtResource( 7 )
-offset = Vector2( 0, 3 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 8 )
