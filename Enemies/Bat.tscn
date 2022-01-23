@@ -122,7 +122,7 @@ rotation = 1.5708
 shape = SubResource( 8 )
 
 [node name="Stats" parent="." instance=ExtResource( 5 )]
-MaxHealth = 3
+MaxHealth = 5
 
 [node name="PlayerDectionZone" parent="." instance=ExtResource( 6 )]
 position = Vector2( 0, -12 )

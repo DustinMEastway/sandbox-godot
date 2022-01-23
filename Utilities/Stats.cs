@@ -17,9 +17,13 @@ public class Stats : Node {
 	public bool IsBoss {
 		get => _IsBoss;
 		set {
+			if (_IsBoss == value) {
+				return;
+			}
+
 			_IsBoss = value;
-			_MaxHealth *= 5;
-			_Health *= 5;
+			_MaxHealth = (_IsBoss) ? _MaxHealth * 2 : _MaxHealth / 2;
+			_Health = (_IsBoss) ? _Health * 2 : _Health / 2;
 		}
 	}
 
