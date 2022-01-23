@@ -468,6 +468,25 @@ margin_bottom = 16.0
 wait_time = 3.0
 one_shot = true
 
+[node name="HelpPanel" type="Panel" parent="."]
+margin_left = 110.0
+margin_top = 66.0
+margin_right = 210.0
+margin_bottom = 126.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="HelpPanel"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 95.0
+margin_bottom = 55.0
+text = "Move: WASD
+Attack: J
+Roll: K"
+valign = 1
+
 [connection signal="timeout" from="SpawnTimer" to="." method="_OnSpawnTimerTimeout"]
 
 [editable path="Camera2D"]
