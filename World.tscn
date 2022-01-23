@@ -464,4 +464,10 @@ margin_top = 5.0
 margin_right = 65.0
 margin_bottom = 16.0
 
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_OnSpawnTimerTimeout"]
+
 [editable path="Camera2D"]
