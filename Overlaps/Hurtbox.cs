@@ -6,6 +6,7 @@ public class Hurtbox : Area2D {
 
 	[Signal]
 	public delegate void InvincibleChange(bool invincible);
+	private CollisionShape2D _CollisionShape;
 	private bool _Invincible = false;
 	private Timer _Timer;
 
@@ -13,7 +14,7 @@ public class Hurtbox : Area2D {
 		get => _Invincible;
 		set {
 			_Invincible = value;
-			SetDeferred("monitoring", !value);
+			_CollisionShape.SetDeferred("disabled", _Invincible);
 			EmitSignal(nameof(InvincibleChange), _Invincible);
 		}
 	}
@@ -41,6 +42,7 @@ public class Hurtbox : Area2D {
 	}
 
 	public override void _Ready() {
+		_CollisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		_Timer = GetNode<Timer>("Timer");
 	}
 }
