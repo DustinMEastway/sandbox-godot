@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Enemies/Bat.png" type="Texture" id=1]
 [ext_resource path="res://Shadows/SmallShadow.png" type="Texture" id=2]
@@ -8,6 +8,12 @@
 [ext_resource path="res://Enemies/PlayerDectionZone.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Overlaps/Hitbox.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Overlaps/SoftCollision.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Shaders/WhiteColor.gdshader" type="Shader" id=9]
+
+[sub_resource type="ShaderMaterial" id=14]
+resource_local_to_scene = true
+shader = ExtResource( 9 )
+shader_param/active = false
 
 [sub_resource type="AtlasTexture" id=2]
 atlas = ExtResource( 1 )
@@ -37,6 +43,39 @@ animations = [ {
 "speed": 10.0
 } ]
 
+[sub_resource type="Animation" id=12]
+resource_name = "Start"
+length = 0.2
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "Stop"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:material:shader_param/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
 [sub_resource type="CircleShape2D" id=7]
 
 [sub_resource type="CapsuleShape2D" id=8]
@@ -57,9 +96,14 @@ collision_layer = 16
 script = ExtResource( 4 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+material = SubResource( 14 )
 position = Vector2( 0, -12 )
 frames = SubResource( 1 )
 animation = "Fly"
+
+[node name="BlinkAnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Start = SubResource( 12 )
+anims/Stop = SubResource( 13 )
 
 [node name="ShadowSprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )
@@ -102,6 +146,7 @@ shape = SubResource( 11 )
 one_shot = true
 autostart = true
 
+[connection signal="InvincibleChange" from="Hurtbox" to="." method="_OnHurtboxInvincibleChange"]
 [connection signal="area_entered" from="Hurtbox" to="." method="_OnHurtboxAreaEntered"]
 [connection signal="Die" from="Stats" to="." method="_OnStatsDie"]
 [connection signal="PlayerDetected" from="PlayerDectionZone" to="." method="_OnPlayerDectionZonePlayerDetected"]

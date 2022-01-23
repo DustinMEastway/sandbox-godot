@@ -19,6 +19,8 @@ public class Bat : KinematicBody2D {
 	[Export]
 	public float WanderRange = 35;
 	private AnimatedSprite _AnimatedSprite;
+	private AnimationPlayer _BlinkAnimationPlayer;
+	private Hurtbox _Hurtbox;
 	private Vector2 _InitialPosition;
 	private PlayerDectionZone _PlayerDectionZone;
 	private SoftCollision _SoftCollision;
@@ -32,6 +34,11 @@ public class Bat : KinematicBody2D {
 		_Stats.TakeDamage((area as Hitbox)?.Damage ?? 0);
 		var knockbackDirection = (area as SwordHitbox)?.KnockbackDirection ?? Vector2.Zero;
 		_Velocity = knockbackDirection * 150;
+		_Hurtbox.BecomeInvincible(0.2f);
+	}
+
+	private void _OnHurtboxInvincibleChange(bool invincible) {
+		_BlinkAnimationPlayer.Play((invincible) ? "Start" : "Stop");
 	}
 
 	private void _OnPlayerDectionZonePlayerDetected(Player player) {
@@ -65,6 +72,8 @@ public class Bat : KinematicBody2D {
 		_InitialPosition = GlobalPosition;
 		_AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		_AnimatedSprite.Play();
+		_BlinkAnimationPlayer = GetNode<AnimationPlayer>("BlinkAnimationPlayer");
+		_Hurtbox = GetNode<Hurtbox>("Hurtbox");
 		_PlayerDectionZone = GetNode<PlayerDectionZone>("PlayerDectionZone");
 		_SoftCollision = GetNode<SoftCollision>("SoftCollision");
 		_Stats = GetNode<Stats>("Stats");

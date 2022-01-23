@@ -15,6 +15,7 @@ public class Player : KinematicBody2D {
 	/// <summary>Max distance per second the player can travel at.</summary>
 	[Export]
 	public float MaxSpeed = 80;
+	private AnimationPlayer _BlinkAnimationPlayer;
 	private AnimationTree _AnimationTree;
 	private AnimationNodeStateMachinePlayback _AnimationTreeState;
 	private Hurtbox _Hurtbox;
@@ -59,6 +60,7 @@ public class Player : KinematicBody2D {
 		_AnimationTree = GetNode<AnimationTree>("AnimationTree");
 		_AnimationTreeState = _AnimationTree.Get("parameters/playback") as AnimationNodeStateMachinePlayback;
 		_AnimationTree.Active = true;
+		_BlinkAnimationPlayer = GetNode<AnimationPlayer>("BlinkAnimationPlayer");
 		_Hurtbox = GetNode<Hurtbox>("Hurtbox");
 		_Stats = GetNode<Stats>("Stats");
 		_SwordHitbox = GetNode<SwordHitbox>("HitboxPivot/SwordHitbox");
@@ -66,9 +68,13 @@ public class Player : KinematicBody2D {
 
 	private void _OnHurtboxAreaEntered(object area) {
 		_Stats.TakeDamage((area as Hitbox)?.Damage ?? 0);
-		_Hurtbox.BecomeInvincible(0.5f);
+		_Hurtbox.BecomeInvincible(0.6f);
 		var playerHurtSound = Player.PlayerHurtSoundScene.Instance<PlayerHurtSound>();
 		GetTree().CurrentScene.AddChild(playerHurtSound);
+	}
+
+	private void _OnHurtboxInvincibleChange(bool invincible) {
+		_BlinkAnimationPlayer.Play((invincible) ? "Start" : "Stop");
 	}
 
 	public void _OnStateFinished() {
