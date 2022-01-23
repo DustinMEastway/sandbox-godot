@@ -7,10 +7,20 @@ public class Stats : Node {
 	[Signal]
 	public delegate void Die();
 	private int? _Health = null;
+	private bool _IsBoss = false;
 	private int _MaxHealth = 1;
 
 	public bool IsAlive {
 		get => _Health > 0;
+	}
+
+	public bool IsBoss {
+		get => _IsBoss;
+		set {
+			_IsBoss = value;
+			_MaxHealth *= 5;
+			_Health *= 5;
+		}
 	}
 
 	[Export]

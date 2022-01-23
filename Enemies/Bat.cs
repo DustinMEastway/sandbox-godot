@@ -8,12 +8,15 @@ public enum BatState {
 
 public class Bat : KinematicBody2D {
 	public static readonly PackedScene DeathEffectScene = ResourceLoader.Load<PackedScene>("res://Effects/EnemyDeathEffect.tscn");
+	public static readonly Shader BossShader = ResourceLoader.Load<Shader>("res://Shaders/Boss.gdshader");
 	public static BatState[] IdleStates = new BatState[] { BatState.Idle, BatState.Wander };
 
 	[Export]
 	public float Acceleration = 500;
 	[Export]
 	public float Friction = 200;
+	[Export]
+	public bool IsBoss = false;
 	[Export]
 	public float MaxSpeed = 50;
 	[Export]
@@ -79,6 +82,12 @@ public class Bat : KinematicBody2D {
 		_Stats = GetNode<Stats>("Stats");
 		_WanderTimer = GetNode<Timer>("WanderTimer");
 		_OnWanderTimerTimeout();
+
+		var material = _AnimatedSprite.Material as ShaderMaterial;
+		if (IsBoss && material != null) {
+			material.Shader = Bat.BossShader;
+			_Stats.IsBoss = true;
+		}
 	}
 
 	private void Die() {
