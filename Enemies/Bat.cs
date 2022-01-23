@@ -26,6 +26,7 @@ public class Bat : KinematicBody2D {
 	private Hurtbox _Hurtbox;
 	private Vector2 _InitialPosition;
 	private PlayerDectionZone _PlayerDectionZone;
+	private TextureProgress _HpBar;
 	private SoftCollision _SoftCollision;
 	private BatState _State = BatState.Chase;
 	private Stats _Stats;
@@ -53,6 +54,11 @@ public class Bat : KinematicBody2D {
 		_OnWanderTimerTimeout();
 	}
 
+	private void _OnStatsChange(Stats stats) {
+		_HpBar.MaxValue = stats.MaxHealth;
+		_HpBar.Value = stats.Health;
+	}
+
 	private void _OnStatsDie() {
 		Die();
 	}
@@ -77,6 +83,7 @@ public class Bat : KinematicBody2D {
 		_AnimatedSprite.Play();
 		_BlinkAnimationPlayer = GetNode<AnimationPlayer>("BlinkAnimationPlayer");
 		_Hurtbox = GetNode<Hurtbox>("Hurtbox");
+		_HpBar = GetNode<TextureProgress>("HpBar");
 		_PlayerDectionZone = GetNode<PlayerDectionZone>("PlayerDectionZone");
 		_SoftCollision = GetNode<SoftCollision>("SoftCollision");
 		_Stats = GetNode<Stats>("Stats");
