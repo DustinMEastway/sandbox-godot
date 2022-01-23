@@ -129,8 +129,13 @@ public class Bat : KinematicBody2D {
 	}
 
 	private void _OnWanderTimerTimeout() {
+		if (!_Stats.IsAlive) {
+			return;
+		}
+
 		_State = IdleStates[(int)GD.RandRange(0, IdleStates.Length)];
 		_WanderTimer.Start((float)GD.RandRange(1, 3));
+
 		if (_State == BatState.Wander) {
 			_WanderPosition = _InitialPosition + new Vector2(
 				(float)GD.RandRange(-WanderRange, WanderRange),

@@ -9,6 +9,10 @@ public class Stats : Node {
 	private int? _Health = null;
 	private int _MaxHealth = 1;
 
+	public bool IsAlive {
+		get => _Health > 0;
+	}
+
 	[Export]
 	public int MaxHealth {
 		get => _MaxHealth;
