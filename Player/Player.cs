@@ -15,6 +15,8 @@ public class Player : KinematicBody2D {
 	/// <summary>Max distance per second the player can travel at.</summary>
 	[Export]
 	public float MaxSpeed = 80;
+	[Signal]
+	public delegate void Ready(Player player);
 	private AnimationPlayer _BlinkAnimationPlayer;
 	private AnimationTree _AnimationTree;
 	private AnimationNodeStateMachinePlayback _AnimationTreeState;
@@ -64,6 +66,7 @@ public class Player : KinematicBody2D {
 		_Hurtbox = GetNode<Hurtbox>("Hurtbox");
 		_Stats = GetNode<Stats>("Stats");
 		_SwordHitbox = GetNode<SwordHitbox>("HitboxPivot/SwordHitbox");
+		EmitSignal(nameof(Ready), this);
 	}
 
 	private void _OnHurtboxAreaEntered(object area) {
