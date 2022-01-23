@@ -1,11 +1,10 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://World/Bush.tscn" type="PackedScene" id=1]
 [ext_resource path="res://World/GrassBackground.png" type="Texture" id=3]
 [ext_resource path="res://World/DirtTileset.png" type="Texture" id=4]
 [ext_resource path="res://World/CliffTileset.png" type="Texture" id=5]
 [ext_resource path="res://World/Grass.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Enemies/Bat.tscn" type="PackedScene" id=7]
 [ext_resource path="res://UI/HealthUi.tscn" type="PackedScene" id=8]
 [ext_resource path="res://World.cs" type="Script" id=9]
 [ext_resource path="res://World/Tree.tscn" type="PackedScene" id=10]
@@ -446,16 +445,6 @@ position = Vector2( 128, 64 )
 [node name="Tree2" parent="YSort/Trees" instance=ExtResource( 10 )]
 position = Vector2( 320, 144 )
 
-[node name="Bat" parent="YSort" instance=ExtResource( 7 )]
-position = Vector2( 128, 32 )
-
-[node name="Bat2" parent="YSort" instance=ExtResource( 7 )]
-position = Vector2( 32, 112 )
-IsBoss = true
-
-[node name="Bat3" parent="YSort" instance=ExtResource( 7 )]
-position = Vector2( 272, 176 )
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="HealthUi" parent="CanvasLayer" instance=ExtResource( 8 )]
@@ -464,8 +453,22 @@ margin_top = 5.0
 margin_right = 65.0
 margin_bottom = 16.0
 
+[node name="WaveLabel" type="Label" parent="CanvasLayer"]
+margin_left = 250.0
+margin_top = 8.0
+margin_right = 320.0
+margin_bottom = 24.0
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="SpawnTimer" type="Timer" parent="."]
 wait_time = 3.0
+one_shot = true
+
+[node name="WaveTimer" type="Timer" parent="."]
+wait_time = 5.0
 one_shot = true
 
 [node name="HelpPanel" type="Panel" parent="."]
@@ -488,5 +491,6 @@ Roll: K"
 valign = 1
 
 [connection signal="timeout" from="SpawnTimer" to="." method="_OnSpawnTimerTimeout"]
+[connection signal="timeout" from="WaveTimer" to="." method="_OnWaveTimerTimeout"]
 
 [editable path="Camera2D"]

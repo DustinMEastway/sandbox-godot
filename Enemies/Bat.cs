@@ -19,6 +19,8 @@ public class Bat : KinematicBody2D {
 	public bool IsBoss = false;
 	[Export]
 	public float MaxSpeed = 50;
+	[Signal]
+	public delegate void Ready(Bat bat);
 	[Export]
 	public float WanderRange = 35;
 	private AnimatedSprite _AnimatedSprite;
@@ -33,6 +35,10 @@ public class Bat : KinematicBody2D {
 	private Vector2 _WanderPosition;
 	private Timer _WanderTimer;
 	private Vector2 _Velocity = Vector2.Zero;
+
+	public Stats Stats {
+		get => _Stats;
+	}
 
 	private void _OnHurtboxAreaEntered(object area) {
 		_Stats.TakeDamage((area as Hitbox)?.Damage ?? 0);
@@ -95,6 +101,8 @@ public class Bat : KinematicBody2D {
 			material.Shader = Bat.BossShader;
 			_Stats.IsBoss = true;
 		}
+
+		EmitSignal(nameof(Ready), this);
 	}
 
 	private void Die() {
