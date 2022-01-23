@@ -11,7 +11,7 @@ public class Stats : Node {
 	private int _MaxHealth = 1;
 
 	public bool IsAlive {
-		get => _Health > 0;
+		get => Health > 0;
 	}
 
 	public bool IsBoss {
